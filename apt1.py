@@ -60,4 +60,5 @@ for i, file in enumerate(aptamer_files):
             representation=rep_type,
             color_scheme=color_scheme,
             highlight_residues=highlight_residues
+            background_color=background_color
         )
