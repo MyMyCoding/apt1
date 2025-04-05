@@ -33,16 +33,29 @@ if aptamer_files:
     selected_index = st.selectbox("🧬 Select Aptamer to View in 3D", df["Index"], format_func=lambda i: df.iloc[i]["Name"])
     
     # Reload file (stream already read above)
-    selected_file = aptamer_files[selected_index]
-    selected_file.seek(0)
-    pdb_data = selected_file.read().decode("utf-8")
+    st.subheader("🛠️ Visualization Settings")
+col1, col2, col3 = st.columns(3)
 
-    st.subheader(f"🧬 3D View of: {selected_file.name}")
-    # Show aptamer with custom settings
-show_ngl_viewer(
-    pdb_data,
-    representation="surface",        # "cartoon", "stick", "surface"
-    color_scheme="chainid",          # "element", "residueindex"
-    highlight_residues=[10, 45, 102] # List of residues to emphasize
-)
+with col1:
+    rep_type = st.selectbox("Representation", ["cartoon", "stick", "surface"])
+with col2:
+    color_scheme = st.selectbox("Coloring", ["chainid", "element", "residueindex"])
+with col3:
+    highlight_input = st.text_input("Highlight Residues (comma-separated)", "45,88")
 
+highlight_residues = [int(r.strip()) for r in highlight_input.split(",") if r.strip().isdigit()]
+
+st.subheader("🧬 Aptamer Structures")
+
+for i, file in enumerate(aptamer_files):
+    with st.expander(f"Aptamer {i+1}", expanded=True):
+        name = st.text_input(f"Enter name for Aptamer {i+1}", value=file.name, key=f"name_{i}")
+        file.seek(0)
+        pdb_data = file.read().decode("utf-8")
+
+        show_ngl_viewer(
+            pdb_data,
+            representation=rep_type,
+            color_scheme=color_scheme,
+            highlight_residues=highlight_residues
+        )
