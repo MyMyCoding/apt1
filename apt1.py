@@ -56,9 +56,10 @@ for i, file in enumerate(aptamer_files):
         pdb_data = file.read().decode("utf-8")
 
         show_ngl_viewer(
-            pdb_data,
-            representation=rep_type,
-            color_scheme=color_scheme,
-            highlight_residues=highlight_residues,
-            background_color=background_color
-        )
+    pdb_data,
+    representation=rep_type,
+    color_scheme=color_scheme,
+    highlight_residues=highlight_residues,
+    background_color=background_color,
+    viewer_id=f"viewer_{i}"  # ✅ unique ID per aptamer
+)
