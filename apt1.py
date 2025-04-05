@@ -38,4 +38,11 @@ if aptamer_files:
     pdb_data = selected_file.read().decode("utf-8")
 
     st.subheader(f"🧬 3D View of: {selected_file.name}")
-    show_ngl_viewer(pdb_data)
+    # Show aptamer with custom settings
+show_ngl_viewer(
+    pdb_data,
+    representation="surface",        # "cartoon", "stick", "surface"
+    color_scheme="chainid",          # "element", "residueindex"
+    highlight_residues=[10, 45, 102] # List of residues to emphasize
+)
+
