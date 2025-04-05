@@ -42,6 +42,8 @@ with col2:
     color_scheme = st.selectbox("Coloring", ["chainid", "element", "residueindex"])
 with col3:
     highlight_input = st.text_input("Highlight Residues (comma-separated)", "45,88")
+with col4:
+    background_color = st.selectbox("Background", ["white", "black", "gray", "lightblue", "beige"])
 
 highlight_residues = [int(r.strip()) for r in highlight_input.split(",") if r.strip().isdigit()]
 
