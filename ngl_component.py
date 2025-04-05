@@ -1,11 +1,10 @@
-import streamlit.components.v1 as components
-
 def show_ngl_viewer(
     pdb_data: str,
     representation: str = "cartoon",
     color_scheme: str = "chainid",
     highlight_residues: list = None,
-    background_color: str = "white"  # ✅ NEW PARAM
+    background_color: str = "white",
+    viewer_id: str = "viewport"  # ✅ new
 ):
     pdb_string = pdb_data.replace("\n", "\\n")
     highlight_script = ""
@@ -21,10 +20,10 @@ def show_ngl_viewer(
             """
 
     html = f"""
-    <div id="viewport" style="width:100%; height:600px; background-color:{background_color};"></div>
+    <div id="{viewer_id}" style="width:100%; height:600px; background-color:{background_color};"></div>
     <script src="https://unpkg.com/ngl@latest/dist/ngl.js"></script>
     <script>
-        var stage = new NGL.Stage("viewport", {{
+        var stage = new NGL.Stage("{viewer_id}", {{
             backgroundColor: "{background_color}"
         }});
         var pdbData = "{pdb_string}";
