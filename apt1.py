@@ -1,49 +1,41 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import py3Dmol
-import matplotlib.pyplot as plt
+from ngl_component import show_ngl_viewer
+from Bio.PDB import PDBParser
+import io
 
-st.set_page_config(layout="wide")
-st.title("RNA Aptamer Docking & Analysis Resource - R.A.D.A.R.")
+st.header("📥 Upload Multiple Aptamers")
 
-pdb_file = st.sidebar.file_uploader("Upload PDB File", type=['pdb'])
-custom_aptamer = st.sidebar.text_input("Enter Custom Aptamer Label", "APT-CUSTOM")
+# Upload multiple PDB files
+aptamer_files = st.file_uploader("Upload multiple aptamer PDB files", type=["pdb"], accept_multiple_files=True)
 
-if pdb_file:
-    docking_score = st.number_input("Enter docking score (e.g., from HDOCK)", value=-200.0)
-    confidence_score = st.number_input("Enter confidence score (0–1)", min_value=0.0, max_value=1.0, value=0.90)
+aptamer_data = []
 
-    h_bonds = np.random.randint(10, 20)
-    salt_bridges = np.random.randint(1, 4)
-    pi_stacks = np.random.randint(1, 3)
+if aptamer_files:
+    st.success(f"{len(aptamer_files)} aptamers uploaded.")
+    parser = PDBParser(QUIET=True)
+    
+    for i, file in enumerate(aptamer_files):
+        structure = parser.get_structure(file.name, io.StringIO(file.read().decode("utf-8")))
+        atom_count = len([a for a in structure.get_atoms()])
+        chain_count = len(list(structure.get_chains()))
+        aptamer_data.append({
+            "Name": file.name,
+            "Chains": chain_count,
+            "Atoms": atom_count,
+            "Index": i
+        })
 
-    data = pd.DataFrame([{
-        'Aptamer': custom_aptamer,
-        'EGFR_Variant': 'Custom',
-        'Docking_Score': docking_score,
-        'Confidence_Score': confidence_score,
-        'Binding_Score': docking_score,
-        'Num_Interactions': h_bonds + salt_bridges + pi_stacks,
-        'Hydrogen_Bonds': h_bonds,
-        'Salt_Bridges': salt_bridges,
-        'Pi_Stacking': pi_stacks,
-        'Stability_Score': round(np.random.uniform(0.85, 0.96), 2),
-        'Mutation_Impact': 'Predicted'
-    }])
-else:
-    data = pd.DataFrame()
+    df = pd.DataFrame(aptamer_data)
+    st.subheader("📊 Aptamer Comparison Table")
+    st.dataframe(df)
 
-st.subheader("Interaction Summary")
-st.dataframe(data)
+    selected_index = st.selectbox("🧬 Select Aptamer to View in 3D", df["Index"], format_func=lambda i: df.iloc[i]["Name"])
+    
+    # Reload file (stream already read above)
+    selected_file = aptamer_files[selected_index]
+    selected_file.seek(0)
+    pdb_data = selected_file.read().decode("utf-8")
 
-st.subheader("3D Structure Viewer")
-with st.expander("View Structure"):
-    xyzview = py3Dmol.view(width=600, height=400)
-    if pdb_file:
-        pdb_string = pdb_file.read().decode("utf-8")
-        xyzview.setBackgroundColor('black')
-        xyzview.addModel(pdb_string, 'pdb')
-        xyzview.setStyle({'cartoon': {'color': 'spectrum'}})
-        xyzview.zoomTo()
-        st.components.v1.html(xyzview._make_html(), height=400)
+    st.subheader(f"🧬 3D View of: {selected_file.name}")
+    show_ngl_viewer(pdb_data)
