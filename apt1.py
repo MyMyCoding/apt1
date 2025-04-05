@@ -34,7 +34,7 @@ if aptamer_files:
     
     # Reload file (stream already read above)
     st.subheader("🛠️ Visualization Settings")
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4= st.columns(4)
 
 with col1:
     rep_type = st.selectbox("Representation", ["cartoon", "stick", "surface"])
