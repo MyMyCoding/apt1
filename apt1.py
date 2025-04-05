@@ -4,6 +4,9 @@ from ngl_component import show_ngl_viewer
 from Bio.PDB import PDBParser
 import io
 
+st.set_page_config(page_title="RADAR - Rapid Aptamer Discovery And Rendering", layout="wide")
+st.title("🎯 RADAR — Rapid Aptamer Discovery And Rendering")
+st.markdown("Welcome to **RADAR**, an interactive platform to visualize and compare EGFR-targeting aptamers for glioblastoma research.")
 st.header("📥 Upload Multiple Aptamers")
 
 # Upload multiple PDB files
@@ -62,4 +65,12 @@ for i, file in enumerate(aptamer_files):
     highlight_residues=highlight_residues,
     background_color=background_color,
     viewer_id=f"viewer_{i}"  # ✅ unique ID per aptamer
+)
+st.markdown("---")
+st.markdown(
+    "<div style='text-align: center; font-size: 0.9em; color: gray;'>"
+    "© 2025 Myreen Ahsan. All rights reserved.<br>"
+    "RADAR — Rapid Aptamer Discovery And Rendering"
+    "</div>",
+    unsafe_allow_html=True
 )
