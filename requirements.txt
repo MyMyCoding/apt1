@@ -3,5 +3,3 @@ py3Dmol
 pandas
 matplotlib
 scikit-learn
-biopython
-requests
