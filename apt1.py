@@ -58,13 +58,16 @@ for i, file in enumerate(aptamer_files):
         file.seek(0)
         pdb_data = file.read().decode("utf-8")
 
-        show_ngl_viewer(
+        # Fallback logic: if user selects "stick", use "ball+stick" to avoid blank rendering
+safe_representation = rep_type if rep_type != "stick" else "ball+stick"
+
+show_ngl_viewer(
     pdb_data,
-    representation=rep_type,
+    representation=safe_representation,
     color_scheme=color_scheme,
     highlight_residues=highlight_residues,
     background_color=background_color,
-    viewer_id=f"viewer_{i}"  # ✅ unique ID per aptamer
+    viewer_id=f"viewer_{i}"
 )
 st.markdown("---")
 st.markdown(
